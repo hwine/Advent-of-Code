@@ -8,6 +8,15 @@ fname = "2015-05.txt"
 bad_names = re.compile(r"ab|cd|pq|xy")
 req_1 = re.compile(r"([aeiou].*){3}")
 req_2 = re.compile(r"([a-z])\1")
+req_3 = re.compile(r"(..).*\1")     # repeated 2 char pattern
+req_4 = re.compile(r"(.).\1")
+
+def is_nice_2(name:str) -> bool:
+    has_2char_repeat = req_3.search(name)
+    has_xyx = req_4.search(name)
+    if has_2char_repeat and has_xyx:
+        return True
+    return False
 
 def is_nice(name:str) -> bool:
     if bad_names.search(name):
@@ -34,12 +43,24 @@ for b in naughty_examples:
 for g in nice_examples:
     assert is_nice(g)
     
+bad_2 = (
+    "uurcxstgmygtbstg",
+    "ieodomkazucvgmuy",
+)
+good_2 = (
+    "qjhvhtzxzqqjkmpb",
+    "xxyxx",
+)
 
-
+for b in bad_2:
+    assert not is_nice_2(b)
+for g in good_2:
+    assert is_nice_2(g)
+    
 def main():
     nice = 0
     for line in fileinput.input(fname):
-        if is_nice(line):
+        if is_nice_2(line):
             nice += 1
     print(f"found {nice} names")
 
